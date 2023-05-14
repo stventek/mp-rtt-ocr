@@ -1,0 +1,19 @@
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore built distribution files
+dist/
+build/
+*.egg-info/
+
+# Ignore system-specific files
+*.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore virtual environment files
+venv/
+env/
