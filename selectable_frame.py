@@ -1,7 +1,6 @@
 
 import json
 import tkinter as tk
-from data import getBoundData
 import main_tk
 
 class SelectableFrame():
@@ -32,17 +31,11 @@ class SelectableFrame():
         self.c1 = event.x, event.y
 
     def OnMouseUp(self, event):
-        x1, y1 = self.c1
-        x2, y2 = self.c2
-        data = {
-            "x1": x1,
-            "y1": y1,
-            "x2": x2,
-            "y2": y2
-        }
-        with open('data.json', 'w') as f:
-            json.dump(data, f)
+        self.mainTk.state.x1, self.mainTk.state.y1 = self.c1
+        self.mainTk.state.x2, self.mainTk.state.y2 = self.c2
+        self.mainTk.state.saveState()
         self.mainTk.bring_child_windows()
-        self.mainTk.data = getBoundData()
         self.mainTk.app.deiconify()
+        if self.mainTk.translate_window is None:
+            self.mainTk.open_translate_window()
         self.selectable_window.destroy()

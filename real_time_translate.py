@@ -1,6 +1,7 @@
 import threading
 import tkinter as tk
 from pynput import keyboard
+from data import computeFrameData
 import main_tk
 from ocr import OCR, printImg
 from playwright import async_api
@@ -52,7 +53,12 @@ class RealTimeTranslate:
     def keep_translating(self):
         while not self.active_thread.is_set() and self.state:
             try:
-                img = printImg(self.mainTk.data)
+                x, y, w, h = computeFrameData(
+                    self.mainTk.state.x1,
+                    self.mainTk.state.y1,
+                    self.mainTk.state.x2,
+                    self.mainTk.state.y2)
+                img = printImg(x, y, w, h)
                 text = OCR(img)
                 if text != "" and not text.isspace() and self.text != text:
                     self.mainTk.logger.info(f"Try translate {self.mainTk.combobox_translator.get()}")

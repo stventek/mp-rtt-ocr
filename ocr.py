@@ -4,9 +4,9 @@ import numpy as np
 import pyautogui
 import pytesseract
 
-def printImg(boundData):
+def printImg(x, y, w, h):
     img =  pyautogui.screenshot(
-        region=(boundData.x, boundData.y, boundData.width, boundData.height))
+        region=(x, y, w, h))
     img = np.array(img)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return img

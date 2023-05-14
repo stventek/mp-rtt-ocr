@@ -17,3 +17,4 @@ Thumbs.db
 # Ignore virtual environment files
 venv/
 env/
+data.json

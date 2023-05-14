@@ -1,5 +1,5 @@
 import customtkinter
-from data import getBoundData
+from data import StateData
 from logger import CallBackLogger
 from translate_word import deepl_lang_codes, google_lang_codes
 import tkinter as tk
@@ -11,15 +11,14 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 class MainTK():
 
     def __init__(self):
-        self.data = getBoundData()
         self.app = customtkinter.CTk()
         self.app.title("Real time  OCR translate")
         self.width = 1200
         self.height = 900
         self.app.geometry(f'{self.width // 2}x{self.height}+{800}+{0}')
-
+        
         self.logger = CallBackLogger('MainTK', self.add_log, logging.DEBUG)
-
+        self.state = StateData()
         self.frame_1 = customtkinter.CTkFrame(master=self.app)
         self.frame_1.pack(pady=20, padx=60, fill="both", expand=True)
 
@@ -82,6 +81,16 @@ class MainTK():
         self.textbox_logs = customtkinter.CTkTextbox(master=self.frame_logs)
         self.textbox_logs.pack(pady=15, padx=20,  fill="both", expand=True)
 
+        self.translate_window = None
+        self.selectable_frame_window = None
+
+        self.open_translate_window()
+
+    def open_translate_window(self):
+        if self.state.x1 is not None:
+            from real_time_translate import RealTimeTranslate
+            self.translate_window = RealTimeTranslate(self)
+
     def add_log(self, log):
         self.textbox_logs.configure(state="normal") 
         self.textbox_logs.insert(tk.END, log + "\n")
@@ -124,4 +133,4 @@ class MainTK():
         self.minimize_child_windows()
         self.app.iconify()
         import selectable_frame
-        selectable_frame.SelectableFrame(self)
+        self.selectable_frame_window = selectable_frame.SelectableFrame(self)
