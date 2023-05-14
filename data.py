@@ -1,6 +1,5 @@
 import json
 
-
 class BoundData():
     def __init__(self, data):
         self.width = abs(data['x2'] - data['x1'])

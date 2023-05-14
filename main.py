@@ -1,14 +1,8 @@
-import os
-import tkinter as tk
 from real_time_translate import RealTimeTranslate
-from selectable_frame import SelectableFrame
+import main_tk
 
-root = tk.Tk()
-
-def open_window(window_class):
-    return window_class(root)
+mainTK = main_tk.MainTK()
 
 if __name__ == "__main__":
-    window_class = RealTimeTranslate if os.path.exists('data.json') else SelectableFrame
-    window_app = open_window(window_class)
-    root.mainloop()
+    window_app = RealTimeTranslate(mainTK)
+    mainTK.app.mainloop()

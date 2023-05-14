@@ -1,26 +1,23 @@
-import asyncio
 import threading
 import tkinter as tk
-from data import getBoundData
 from pynput import keyboard
+import main_tk
 from ocr import OCR, printImg
 from playwright import async_api
-from translate_word import translate_Google
+from translate_word import Translator
 import urllib.parse
 
 class RealTimeTranslate:
-    def __init__(self, root: tk.Tk):
-        self.data = getBoundData()
-        self.root = root
-        self.translate_window = tk.Toplevel(self.root)
+    def __init__(self, mainTk: main_tk.MainTK):
+        self.mainTk = mainTk
+        self.translate_window = tk.Toplevel(self.mainTk.app)
         self.translate_window.protocol("WM_DELETE_WINDOW", self.on_exit)
-        self.root.protocol("WM_DELETE_WINDOW", self.on_exit)
+        self.mainTk.app.protocol("WM_DELETE_WINDOW", self.on_exit)
         #self.translate_window.withdraw()
         #self.translate_window.overrideredirect(True)
         self.width = 800
         self.height = 200
         self.translate_window.geometry(f'{self.width}x{self.height}+{0}+{0}')
-        self.root.geometry(f'{self.width // 2}x{self.height // 2}+{self.width}+{0}')
         self.translate_window.configure(bg='black')
         self.canvas = tk.Canvas(self.translate_window, bg='black', highlightthickness=0)
         self.canvas.pack(expand=tk.YES, fill=tk.BOTH) 
@@ -33,40 +30,48 @@ class RealTimeTranslate:
         #self.hotkey_ctrl_c = keyboard.GlobalHotKeys({'<ctrl>+c': self.on_exit})
         self.active_thread = threading.Event()
         self.my_thread = threading.Thread(target=self.update_translation)
-        self.update_translation_interval = 3
-        self.update_label_interval = 500
+        self.update_translation_interval = 0.25
+        self.update_label_interval = 50
         self.state = False
         self.text = ""
         self.tranlated_text = ""
-        self.translate_count = 0
         self.hotkey_ctrl_c_t.start()
         self.translate_window.after(self.update_label_interval, self.update_label)
         self.my_thread.start()
+        self.translator = Translator()
 
     def translate(self, text: str):
         sanitazed_text = text.replace("\n", " ")
         sanitazed_text = urllib.parse.quote(sanitazed_text)
-        translated_text = asyncio.run(translate_Google(sanitazed_text))
+        translated_text = self.translator.translate(sanitazed_text, 
+            self.mainTk.combobox_from.get(), 
+            self.mainTk.combobox_to.get(),
+            self.mainTk.combobox_translator.get())
         return translated_text
 
     def keep_translating(self):
-        while not self.active_thread.is_set():
+        while not self.active_thread.is_set() and self.state:
             try:
-                img = printImg(self.data)
+                img = printImg(self.mainTk.data)
                 text = OCR(img)
-                if self.text != text:
+                if text != "" and not text.isspace() and self.text != text:
+                    self.mainTk.logger.info(f"Try translate {self.mainTk.combobox_translator.get()}")
                     self.tranlated_text = self.translate(text)
-                    self.translate_count += 1
+                    self.mainTk.add_translation_count()
                     self.text = text
-                    print("translate count", self.translate_count)
+                    self.mainTk.logger.info("Successful translation")
+                    break
+                else:
                     break
             except async_api.TimeoutError:
-                    print("Timeout, trying again")
+                    self.mainTk.add_translation_timeout()
+                    self.mainTk.logger.info("Timeout, re trying")
 
     def update_translation(self):
         while not self.active_thread.is_set():
             if self.state:
                 self.keep_translating()
+                self.mainTk.logger.debug("OCR check")
             self.active_thread.wait(self.update_translation_interval)
 
     def update_label(self):
@@ -84,9 +89,10 @@ class RealTimeTranslate:
     def toggle(self):
         self.state = not self.state
         self.update_canvas()
+        if self.state: self.mainTk.logger.info(f"OCR scan every {self.update_translation_interval}s")
 
     def on_exit(self):
         self.hotkey_ctrl_c_t.stop()
         self.active_thread.set()
         self.my_thread.join()
-        self.root.destroy()
+        self.mainTk.app.destroy()

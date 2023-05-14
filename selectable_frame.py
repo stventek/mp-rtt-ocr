@@ -1,41 +1,26 @@
 
 import json
 import tkinter as tk
-
-from real_time_translate import RealTimeTranslate
+from data import getBoundData
+import main_tk
 
 class SelectableFrame():
 
     c1 = None
     c2 = None
     
-    def __init__(self, root):
-        self.root = root
-        self.selectable_window = tk.Toplevel(self.root)
-        self.selectable_window.title("")
+    def __init__(self, mainTk: main_tk.MainTK):
+        self.mainTk = mainTk
+        self.selectable_window = tk.Toplevel(self.mainTk.app)
         self.selectable_window.attributes("-fullscreen", True)
-
+        self.selectable_window.attributes("-alpha", 0.7)
         self.canvas = tk.Canvas(self.selectable_window, bg="black", highlightthickness=0)
         self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        self.menu = tk.Menu(self.selectable_window)
-        self.menu.add_command(label="Transparency", command=self.OnTrans)
-        self.selectable_window.config(menu=self.menu)
 
         self.selectable_window.bind("<Motion>", self.OnMouseMove)
         self.selectable_window.bind("<Button-1>", self.OnMouseDown)
         self.selectable_window.bind("<ButtonRelease-1>", self.OnMouseUp)
 
-        self.transp = False
-        self.selectable_window.after(250, self.OnTrans)
-
-    def OnTrans(self, event=None):
-        if self.transp == False:
-            self.selectable_window.attributes("-alpha", 0.7)
-            self.transp = True
-        else:
-            self.selectable_window.attributes("-alpha", 1.0)
-            self.transp = False
 
     def OnMouseMove(self, event):
         if self.c1 is None or event.state == 0: return
@@ -57,5 +42,7 @@ class SelectableFrame():
         }
         with open('data.json', 'w') as f:
             json.dump(data, f)
-        RealTimeTranslate()
+        self.mainTk.bring_child_windows()
+        self.mainTk.data = getBoundData()
+        self.mainTk.app.deiconify()
         self.selectable_window.destroy()

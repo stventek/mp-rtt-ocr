@@ -12,5 +12,5 @@ def printImg(boundData):
     return img
 
 def OCR(image):
-    text = pytesseract.image_to_string(image)
+    text : str = pytesseract.image_to_string(image)
     return text
