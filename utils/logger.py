@@ -1,7 +1,8 @@
 import logging
+from typing import Callable
 
 class MyHandler(logging.Handler):
-    def __init__(self, callback):
+    def __init__(self, callback: Callable[[str], None]):
         super().__init__()
         self.callback = callback
     
@@ -11,7 +12,7 @@ class MyHandler(logging.Handler):
 
 class CallBackLogger(logging.Logger):
 
-    def __init__(self, name: str, callback, level):
+    def __init__(self, name: str, callback: Callable[[str], None], level):
         super().__init__(name, level)
         handler = MyHandler(callback)
         formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s - %(message)s')

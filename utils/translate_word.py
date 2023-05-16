@@ -1,20 +1,24 @@
 import asyncio
 from playwright.async_api import async_playwright
-from lang_codes import deepl_lang_codes, google_lang_codes
+from utils.lang_codes import deepl_lang_codes, google_lang_codes
 
 class Translator():
-    deepl_lang_codes = deepl_lang_codes
-    google_lang_codes = google_lang_codes
 
-    def translate(self, word, from_lang, to_lang, translator):
+    async def translate(self, word, from_lang, to_lang, translator):
         if translator == "Deepl":
-            return asyncio.run(self.translate_Deepl(word, from_lang, to_lang))
+            return await self.translate_Deepl(
+                word, 
+                deepl_lang_codes[from_lang], 
+                deepl_lang_codes[to_lang])
         elif translator == "Google":
-            return asyncio.run(self.translate_Google(word, from_lang, to_lang))
+            return await self.translate_Google(
+                word, 
+                google_lang_codes[from_lang], 
+                google_lang_codes[to_lang])
 
     async def translate_Deepl(self, word, from_lang, to_lang):
         async with async_playwright() as p:
-            url = 'https://www.deepl.com/translator#en/es/' + word
+            url = f'https://www.deepl.com/translator#{from_lang}/{to_lang}/{word}'
             browser = await p.chromium.launch()
             context = await browser.new_context()
             page = await context.new_page()
@@ -29,7 +33,7 @@ class Translator():
         
     async def translate_Google(self, word, from_lang, to_lang):
         async with async_playwright() as p:
-            url = f'https://translate.google.com/?hl=es&sl=en&tl=es&text={word}&op=translate'
+            url = f'https://translate.google.com/?hl=es&sl={from_lang}&tl={to_lang}&text={word}&op=translate'
             browser = await p.chromium.launch()
             context = await browser.new_context()
             page = await context.new_page()

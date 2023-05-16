@@ -14,6 +14,10 @@ class StateData:
         self.x2 = data.get('x2')
         self.y1 = data.get('y1')
         self.y2 = data.get('y2')
+        self.translator = data.get('translator') or 'Deepl'
+        self.from_lang = data.get('from_lang') or 'English'
+        self.to_lang = data.get('to_lang') or 'Spanish'
+        self.display = data.get('display') 
 
     def _loadData(self) -> dict:
         try:
@@ -28,6 +32,10 @@ class StateData:
             'x2': self.x2,
             'y1': self.y1,
             'y2': self.y2,
+            'translator': self.translator,
+            'to_lang': self.to_lang,
+            'from_lang': self.from_lang,
+            'display': self.display
         }
 
     def saveState(self):
