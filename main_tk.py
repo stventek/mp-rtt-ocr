@@ -75,7 +75,7 @@ class MainTKWindow(customtkinter.CTk):
         self.label_mode = customtkinter.CTkLabel(master=self.group_label_controls.frame_group, text="OCR Mode")
         self.label_mode.grid(row=2, column=0, pady=(20,0), padx=(0,20), sticky='e')
 
-        self.combobox_mode = customtkinter.CTkComboBox(self.group_label_controls.frame_group, 
+        self.combobox_mode = customtkinter.CTkComboBox(self.group_label_controls.frame_group,
             state="readonly", 
             values=["Static Frame", "Magic Window"])
         
@@ -137,9 +137,9 @@ class MainTKWindow(customtkinter.CTk):
         )
         self.group_label_magic.grid(row=1, column=0, sticky='ewns', pady=0, padx=(0,10))
 
-        switch_var = customtkinter.StringVar(value="on")
+        self.switch_var = customtkinter.StringVar(value="on")
         self.switch_frame_magic = customtkinter.CTkSwitch(master=self.group_label_magic.frame_group, text="Frame/ unframe",
-            variable=switch_var, onvalue="on", offvalue="off")
+            variable=self.switch_var, onvalue="on", offvalue="off")
         self.switch_frame_magic.pack(pady=5, padx=10)
         # metadata group
 
@@ -167,7 +167,7 @@ class MainTKWrapper():
         self.translate_window_wrapper = None
         self.selectable_frame_window = None
         self.select_monitor_window = None
-
+        self.magic_window = None
         self.app.button_set_auto_mode.configure(command=self.toggle_auto)
 
         self.app.button_snapshot.configure(command=self.snapshot)
@@ -188,8 +188,34 @@ class MainTKWrapper():
 
         self.app.button_advance.configure(command=self.open_advance)
 
+        self.app.combobox_mode.configure(command=self.change_ocr_mode)
+        self.app.combobox_mode.set(self.state.ocr_mode)
+
+        self.app.switch_frame_magic.configure(command=self.unframe_magic)
+
+        self.open_magic_window()
         self.open_translate_window()
 
+    def unframe_magic(self):
+        if self.magic_window:
+            self.magic_window.unframe_window()
+
+    def change_ocr_mode(self, choice):
+        if self.state.ocr_mode != choice:
+            if choice == 'Magic Window':
+                self.state.ocr_mode = 'Magic Window'
+                self.open_magic_window()
+                self.state.saveState()
+            elif choice == 'Static Frame':
+                self.magic_window.destroy()
+                self.state.ocr_mode = 'Static Frame'
+                self.state.saveState()
+                
+    def open_magic_window(self):
+        if self.state.ocr_mode == 'Magic Window':
+            from toplevel_tks.magic_window import MagicWindow
+            self.magic_window = MagicWindow(self)
+    
     def open_advance(self):
         from toplevel_tks.advance_settings import AdvanceSettings
         self.advance_settings_wrapper = AdvanceSettings(self) 
@@ -278,6 +304,8 @@ class MainTKWrapper():
             if isinstance(child, tk.Toplevel):
                 if child.winfo_name() == 'translate_window':
                     child.state("normal")
+                elif child.winfo_name() == 'magic_window':
+                    child.state("normal")
                 else:
                     child.deiconify()
 
@@ -285,6 +313,8 @@ class MainTKWrapper():
         for child in self.app.winfo_children():
             if isinstance(child, tk.Toplevel):
                 if child.winfo_name() == 'translate_window':
+                    child.state("withdrawn")
+                elif child.winfo_name() == 'magic_window':
                     child.state("withdrawn")
                 else:
                     child.iconify()

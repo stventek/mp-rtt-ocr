@@ -1,8 +1,8 @@
-import asyncio
 from playwright.async_api import async_playwright
+from translate import Translator
 from utils.lang_codes import deepl_lang_codes, google_lang_codes
-
-class Translator():
+import urllib.parse
+class TranslatorManager():
 
     async def translate(self, word, from_lang, to_lang, translator):
         if translator == "Deepl":
@@ -17,13 +17,26 @@ class Translator():
                 google_lang_codes[to_lang])
 
     async def translate_Deepl(self, word, from_lang, to_lang):
+        word = urllib.parse.quote(word)
         async with async_playwright() as p:
             url = f'https://www.deepl.com/translator#{from_lang}/{to_lang}/{word}'
-            browser = await p.chromium.launch()
+            browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--window-size=1920,1080",
+            ])
             context = await browser.new_context()
             page = await context.new_page()
             page.set_default_timeout(10000)
             await page.goto(url)
+            await page.route(
+                "**/*",
+                lambda route: route.abort() if route.request.resource_type in ["image", "media", "font", "other"] else route.continue_(),
+            )
             await page.wait_for_selector('div[aria-labelledby="translation-results-heading"][role="textbox"] > p > span > span')
             p_locator = page.locator('div[aria-labelledby="translation-results-heading"][role="textbox"] > p')
             paragraphs = await p_locator.all_text_contents()
@@ -32,11 +45,24 @@ class Translator():
             return text
         
     async def translate_Google(self, word, from_lang, to_lang):
+        word = urllib.parse.quote(word)
         async with async_playwright() as p:
             url = f'https://translate.google.com/?hl=es&sl={from_lang}&tl={to_lang}&text={word}&op=translate'
-            browser = await p.chromium.launch()
+            browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--window-size=1920,1080",
+            ])
             context = await browser.new_context()
             page = await context.new_page()
+            await page.route(
+                "**/*",
+                lambda route: route.abort() if route.request.resource_type in ["image", "media", "font", "other"] else route.continue_(),
+            )
             page.set_default_timeout(10000)
             await page.goto(url)
             await page.wait_for_selector('c-wiz[aria-labelledby="ucj-4"] > div > div > div > div > span > span > span')
