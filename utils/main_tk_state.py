@@ -17,7 +17,11 @@ class StateData:
         self.translator = data.get('translator') or 'Deepl'
         self.from_lang = data.get('from_lang') or 'English'
         self.to_lang = data.get('to_lang') or 'Spanish'
-        self.display = data.get('display') 
+        self.display = data.get('display') or {"top":None,"left":None,"width":None,"height":None, "choice":1}
+        self.ocr_interval = data.get('ocr_interval') or 250
+        self.debug_mode = data.get('debug_mode') or 'on'
+        self.translate_timeout = data.get('translate_timeout') or 8000
+        self.log_level = data.get('log_level') or 'DEBUG'
 
     def _loadData(self) -> dict:
         try:
@@ -35,7 +39,11 @@ class StateData:
             'translator': self.translator,
             'to_lang': self.to_lang,
             'from_lang': self.from_lang,
-            'display': self.display
+            'display': self.display,
+            'ocr_interval': self.ocr_interval,
+            'debug_mode': self.debug_mode,
+            'translate_timeout': self.translate_timeout,
+            'log_level': self.log_level
         }
 
     def saveState(self):
