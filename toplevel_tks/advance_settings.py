@@ -16,10 +16,11 @@ class AdvanceSettings():
         }
         self.app = ck.CTkToplevel(self.mainTk.app)
         self.app.title("Advance Settings")
-        self.width = 800
-        self.height = 600
+        self.width = 600
+        self.height = 400
 
         self.app.geometry(f"{self.width}x{self.height}+{800}+{0}")
+        self.app.transient(self.mainTk.app)
         self.app.grab_set()
 
         self.frame_1 = ck.CTkFrame(master=self.app)

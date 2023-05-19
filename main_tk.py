@@ -226,6 +226,8 @@ class MainTKWrapper():
 
     def snapshot(self):
         if self.translate_window_wrapper:
+            if self.translate_window_wrapper.translate_task:
+                self.translate_window_wrapper.translate_task.cancel()
             threading.Thread(target=self.snapshot_call).start()
 
     def snapshot_call(self):
@@ -302,7 +304,9 @@ class MainTKWrapper():
     def bring_child_windows(self):
         for child in self.app.winfo_children():
             if isinstance(child, tk.Toplevel):
-                if child.winfo_name() == 'translate_window':
+                if child.winfo_name() == 'text_display_win_parent':
+                    child.state("normal")
+                elif child.winfo_name() == 'text_display_child':
                     child.state("normal")
                 elif child.winfo_name() == 'magic_window':
                     child.state("normal")
@@ -312,7 +316,9 @@ class MainTKWrapper():
     def minimize_child_windows(self):
         for child in self.app.winfo_children():
             if isinstance(child, tk.Toplevel):
-                if child.winfo_name() == 'translate_window':
+                if child.winfo_name() == 'text_display_win_parent':
+                    child.state("withdrawn")
+                elif child.winfo_name() == 'text_display_child':
                     child.state("withdrawn")
                 elif child.winfo_name() == 'magic_window':
                     child.state("withdrawn")

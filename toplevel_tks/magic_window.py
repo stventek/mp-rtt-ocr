@@ -9,9 +9,12 @@ class MagicWindow():
     def __init__(self, mainTk: main_tk.MainTKWrapper):
         self.mainTk = mainTk
         self.app = tk.Toplevel(self.mainTk.app, name="magic_window")
-        self.width = 600
+        self.width = 800
         self.height = 200
         self.resizing = None
+        self.frame_size = 5
+        self.hover = False
+        self.unframe = False
         self.app.overrideredirect(True)
         self.app.title("magic window")
         self.app.geometry(f"{self.width}x{self.height}+{800}+{500}")
@@ -25,18 +28,14 @@ class MagicWindow():
         self.frame.pack(fill='both', expand=True)
         self.canvas = tk.Canvas(self.frame, bg='black', highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
-        self.unframe = False
         self.canvas.grid_columnconfigure(0, weight=1)
         self.canvas.grid_rowconfigure(0, weight=1)
-        self.frame_size = 5
         self.grip = tk.Frame(self.canvas, bg='white', width=self.frame_size, height=self.frame_size)
         self.grip.configure(cursor='sizing')
         self.grip.grid(column=0, row=0, sticky='se')
         self.grip.bind('<ButtonPress-1>', self.start_resize)
-
         draw_corners(self.canvas, 0, 0, self.width, self.height, tags='lines', width=self.frame_size)
         self.app.after(100, self.check_hover)
-        self.hover = False
 
 
     def unframe_window(self):
