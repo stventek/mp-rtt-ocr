@@ -1,10 +1,11 @@
 import asyncio
 import logging
+import sys
 import threading
 import tkinter as tk
 from collections import deque
 from playwright import async_api
-from toplevel_tks.text_display import TextDisplayWindowWrapper
+from toplevel_tks.text_display import TextDisplayWindowWrapper, TextDisplayWindowWrapperLinux
 from utils.logger import CallBackLogger
 from utils.main_tk_state import computeFrameData
 from utils.ocr import OCR, printImg
@@ -23,7 +24,10 @@ class TranslateWindowWrapper:
         self.translate_task : asyncio.Task = None
         self.text = ""
         self.tranlated_text = ""
-        self.text_display_window = TextDisplayWindowWrapper(self.mainTk.app)
+        if sys.platform == 'linux':          
+            self.text_display_window = TextDisplayWindowWrapperLinux(self.mainTk.app)
+        else:
+            self.text_display_window = TextDisplayWindowWrapper(self.mainTk.app)
         self.text_display_window.main_window.after(self.update_label_interval, self.update_label)
         self.active_thread = threading.Event()
         self.my_thread = threading.Thread(target=self.update_translation)

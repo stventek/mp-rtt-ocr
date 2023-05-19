@@ -21,7 +21,6 @@ class AdvanceSettings():
 
         self.app.geometry(f"{self.width}x{self.height}+{800}+{0}")
         self.app.transient(self.mainTk.app)
-        self.app.grab_set()
 
         self.frame_1 = ck.CTkFrame(master=self.app)
         self.frame_1.pack(pady=20, padx=60, fill="both", expand=True)
@@ -65,4 +64,5 @@ class AdvanceSettings():
         self.mainTk.state.debug_mode = self.debug_mode.get()
         self.mainTk.state.log_level = self.combobox_log_level.get()
         self.mainTk.state.saveState()
+        self.mainTk.open_debug_group()
         self.app.destroy()

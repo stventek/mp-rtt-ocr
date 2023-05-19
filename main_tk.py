@@ -9,8 +9,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 customtkinter.set_default_color_theme("custom_theme.json")
-#customtkinter.set_widget_scaling(1.2)
+
 theme = customtkinter.ThemeManager()
+appearance_mode = customtkinter.AppearanceModeTracker()
 
 class MainTKWindow(customtkinter.CTk):
     def __init__(self):
@@ -18,20 +19,20 @@ class MainTKWindow(customtkinter.CTk):
         self.title("Real Time OCR translator")
         self.width = 900
         self.height = 600
-        self.geometry(f"{self.width}x{self.height}+{800}+{0}")
+        self.geometry(f"{self.width}x{self.height}")
 
         style = ttk.Style(self)
         style.theme_create("style", settings = { 
             "TLabelframe": {
                 "configure": {
-                    "background": theme.theme['CTkFrame']['top_fg_color'][1],
+                    "background": theme.theme['CTkFrame']['top_fg_color'][appearance_mode.appearance_mode],
                     "borderwidth": 1
                 }
             },
             'TLabelframe.Label': {
                 'configure': {
                     'background': 'transparent',
-                    'foreground': 'white'
+                    'foreground': theme.theme['CTkLabel']['text_color'][appearance_mode.appearance_mode]
                 }
             }
         })
@@ -42,7 +43,7 @@ class MainTKWindow(customtkinter.CTk):
         self.group_label_logs = CustomLabelFrame(self,
             text="Logs", 
         )
-        self.group_label_logs.pack(fill='both', expand=True, side='left', padx=10, pady=10)
+        #self.group_label_logs.pack(fill='both', expand=True, side='left', padx=10, pady=10)
 
         self.label_logs = customtkinter.CTkLabel(master=self.group_label_logs.frame_group, text="Logs", font=("Arial", 24))
         self.label_logs.pack(pady=(20,5), padx=10)
@@ -50,7 +51,7 @@ class MainTKWindow(customtkinter.CTk):
         self.textbox_logs = customtkinter.CTkTextbox(master=self.group_label_logs.frame_group)
         self.textbox_logs.pack(pady=15, padx=20,  fill="both", expand=True)
 
-        self.main_frame = customtkinter.CTkFrame(self, fg_color="gray14")
+        self.main_frame = customtkinter.CTkFrame(self, fg_color=theme.theme['CTk']['fg_color'][appearance_mode.appearance_mode])
         self.main_frame.pack(fill='y', side='right', padx=(0,10), pady=10)
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=1)
@@ -195,6 +196,15 @@ class MainTKWrapper():
 
         self.open_magic_window()
         self.open_translate_window()
+        self.open_debug_group()
+
+    def open_debug_group(self):
+        if self.state.debug_mode == 'on':
+            self.app.group_label_logs.pack(fill='both', expand=True, side='left', padx=10, pady=10)
+            self.app.geometry(f"{self.app.width}x{self.app.height}")
+        else:
+            self.app.group_label_logs.pack_forget()
+            self.app.geometry(f"{435}x{self.app.height}")
 
     def unframe_magic(self):
         if self.magic_window:

@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 import main_tk
 from utils.draw_corners import draw_corners
@@ -15,9 +16,12 @@ class MagicWindow():
         self.unframe = False
         self.app.overrideredirect(True)
         self.app.title("magic window")
-        self.app.geometry(f"{self.width}x{self.height}+{800}+{500}")
-        self.app.wm_attributes('-transparentcolor', 'black')
-        self.app.attributes("-alpha", 0.6)
+        self.app.geometry(f"{self.width}x{self.height}")
+        if sys.platform == 'linux':
+            self.app.wait_visibility(self.app)
+        else:
+            self.app.wm_attributes('-transparentcolor', 'black')
+        self.app.attributes("-alpha", 0.5)
         self.app.wm_attributes('-topmost', True)
         self.app.bind("<ButtonPress-1>", self.start_move)
         self.app.bind("<ButtonRelease-1>", self.stop_move)
@@ -33,8 +37,15 @@ class MagicWindow():
         self.grip.grid(column=0, row=0, sticky='se')
         self.grip.bind('<ButtonPress-1>', self.start_resize)
         draw_corners(self.canvas, 0, 0, self.width, self.height, tags='lines', width=self.frame_size)
-        self.app.after(100, self.check_hover)
+        if sys.platform != 'linux':
+            self.app.after(100, self.check_hover)
+        self.app.bind('<Configure>', self.update_win_info)
 
+    def update_win_info(self, event):
+        wx, wy = self.app.winfo_x(), self.app.winfo_y()
+        w, h = self.app.winfo_width(), self.app.winfo_height()
+        self.window_square = (wx + self.frame_size ,wy + self.frame_size, w - self.frame_size, h - self.frame_size,)
+        
     def unframe_window(self):
         self.unframe = not self.unframe
         if self.unframe:
@@ -71,7 +82,6 @@ class MagicWindow():
             wx, wy = self.app.winfo_x(), self.app.winfo_y()
             w, h = self.app.winfo_width(), self.app.winfo_height()
             endx, endy = wx + w, wy + h
-            self.window_square = (wx + self.frame_size ,wy + self.frame_size, w - self.frame_size, h - self.frame_size,)
 
             if x > wx and y > wy and x < endx and y < endy:
                 if not self.hover:

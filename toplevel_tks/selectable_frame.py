@@ -1,7 +1,7 @@
 
+import sys
 import tkinter as tk
 import main_tk
-import pyautogui
 
 class SelectableFrame():
 
@@ -12,9 +12,6 @@ class SelectableFrame():
         self.p2 = None
         self.mainTk = mainTk
         self.selectable_window = tk.Toplevel(self.mainTk.app)
-        #self.selectable_window.attributes("-fullscreen", True)
-        self.selectable_window.wm_attributes('-topmost', True)
-        self.selectable_window.overrideredirect(True)
         geometry_string = "{width}x{height}{sign}{left}{sign}{top}".format(
             width=self.mainTk.state.display["width"],
             height=self.mainTk.state.display["height"],
@@ -23,13 +20,18 @@ class SelectableFrame():
             top=self.mainTk.state.display["top"]
         )
         self.selectable_window.geometry(geometry_string)
-        self.selectable_window.attributes("-alpha", 0.7)
+        self.selectable_window.configure(bg='black')
+        self.selectable_window.wm_attributes('-topmost', True)
+        self.selectable_window.overrideredirect(True)
         self.canvas = tk.Canvas(self.selectable_window, bg="black", highlightthickness=0)
         self.canvas.pack(fill=tk.BOTH, expand=True)
         self.selectable_window.bind("<Motion>", self.OnMouseMove)
         self.selectable_window.bind("<Button-1>", self.OnMouseDown)
         self.selectable_window.bind("<ButtonRelease-1>", self.OnMouseUp)
         self.selectable_window.focus_force()
+        if sys.platform == "linux":
+            self.selectable_window.wait_visibility(self.selectable_window)
+        self.selectable_window.attributes("-alpha", 0.7)
 
     def OnMouseMove(self, event):
         if self.c1 is None or event.state == 0: return
