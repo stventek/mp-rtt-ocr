@@ -1,18 +1,14 @@
 import asyncio
 import logging
 import threading
-import urllib.parse
-
 import tkinter as tk
 from collections import deque
-from pynput import keyboard
 from playwright import async_api
 from toplevel_tks.text_display import TextDisplayWindowWrapper
-
 from utils.logger import CallBackLogger
 from utils.main_tk_state import computeFrameData
 from utils.ocr import OCR, printImg
-from utils.translate_word import TranslatorManager
+from utils.translator_manager import TranslatorManager
 import main_tk
 
 class TranslateWindowWrapper:
@@ -23,7 +19,6 @@ class TranslateWindowWrapper:
         self.thread_queue = deque()  
         self.logger = CallBackLogger('MainTK', self.add_log, 
             logging.DEBUG)
-        self.update_translation_interval = 0.25
         self.update_label_interval = 50
         self.translate_task : asyncio.Task = None
         self.text = ""
@@ -55,7 +50,8 @@ class TranslateWindowWrapper:
         translated_text = await self.translator.translate(sanitazed_text, 
             self.mainTk.state.from_lang, 
             self.mainTk.state.to_lang,
-            self.mainTk.state.translator)
+            self.mainTk.state.translator,
+            self.mainTk.state.translate_timeout)
         return translated_text
 
     def OCR_contents(self):
@@ -101,7 +97,7 @@ class TranslateWindowWrapper:
             if self.text_display_window.auto_mode:
                 self.logger.debug("OCR check")
                 asyncio.run(self.keep_translating())
-            self.active_thread.wait(self.update_translation_interval)
+            self.active_thread.wait(int(self.mainTk.state.ocr_interval) / 1000)
 
     def update_label(self):
         self.text_display_window.label.configure(text=self.tranlated_text)
@@ -111,7 +107,7 @@ class TranslateWindowWrapper:
         self.text_display_window.auto_mode = not self.text_display_window.auto_mode
         self.text_display_window.update_canvas()
         if self.text_display_window.auto_mode: 
-            self.logger.info(f"OCR scan every {self.update_translation_interval}s")
+            self.logger.info(f"OCR scan every {int(self.mainTk.state.ocr_interval) / 1000}s")
             self.mainTk.app.button_snapshot.configure(state="disabled")
         else:
             self.mainTk.app.button_snapshot.configure(state=tk.NORMAL)

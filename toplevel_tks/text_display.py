@@ -64,7 +64,6 @@ class TextDisplayWindowWrapper:
         self.canvas.grid(row=0, column=0, sticky='ew')
 
         self.label = tk.Label(self.main_window, 
-                         text="A" * 300, 
                          fg='white', 
                          background="black", 
                          font=('Arial', 16),

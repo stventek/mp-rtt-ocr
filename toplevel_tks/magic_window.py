@@ -1,7 +1,5 @@
 import tkinter as tk
-import customtkinter as ck
 import main_tk
-import tkinter.ttk as ttk
 from utils.draw_corners import draw_corners
 
 class MagicWindow():
@@ -37,7 +35,6 @@ class MagicWindow():
         draw_corners(self.canvas, 0, 0, self.width, self.height, tags='lines', width=self.frame_size)
         self.app.after(100, self.check_hover)
 
-
     def unframe_window(self):
         self.unframe = not self.unframe
         if self.unframe:
@@ -46,10 +43,10 @@ class MagicWindow():
             self.canvas.pack(fill='both', expand=True)
 
     def resize(self, event):
-        x = self.app.winfo_rootx()  # Get the root window's x-coordinate
-        y = self.app.winfo_rooty()  # Get the root window's y-coordinate
-        w = event.x_root - x  # Calculate the new width relative to the root window
-        h = event.y_root - y  # Calculate the new height relative to the root window
+        x = self.app.winfo_rootx() 
+        y = self.app.winfo_rooty()  
+        w = event.x_root - x  
+        h = event.y_root - y  
         if w > 0 and h > 0:
             self.canvas.delete('lines')
             draw_corners(self.canvas, 0, 0, w, h, tags='lines', width=self.frame_size)

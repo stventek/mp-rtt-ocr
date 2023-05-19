@@ -34,13 +34,13 @@ class SelectableFrame():
     def OnMouseMove(self, event):
         if self.c1 is None or event.state == 0: return
         self.c2 = event.x, event.y
-        self.p2 = pyautogui.position()
+        self.p2 = event.x_root, event.y_root
         self.canvas.delete("selection")
         self.canvas.create_rectangle(self.c1, self.c2, outline="red", tags="selection")
 
     def OnMouseDown(self, event):
         self.c1 = event.x, event.y
-        self.p1 = pyautogui.position()
+        self.p1 = event.x_root, event.y_root
 
     def OnMouseUp(self, event):
         self.mainTk.state.x1, self.mainTk.state.y1 = self.p1
