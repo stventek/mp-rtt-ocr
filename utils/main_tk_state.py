@@ -23,6 +23,9 @@ class StateData:
         self.translate_timeout = data.get('translate_timeout') or 8000
         self.log_level = data.get('log_level') or 'DEBUG'
         self.ocr_mode = data.get('ocr_mode') or 'Magic Window'
+        self.theme = data.get('theme') or 'System'
+        self.text_opacity = data.get('text_opacity') or 0.6
+
     def _loadData(self) -> dict:
         try:
             with open('data.json') as f:
@@ -44,7 +47,9 @@ class StateData:
             'debug_mode': self.debug_mode,
             'translate_timeout': self.translate_timeout,
             'log_level': self.log_level,
-            'ocr_mode': self.ocr_mode
+            'ocr_mode': self.ocr_mode,
+            'theme': self.theme,
+            'text_opacity': self.text_opacity
         }
 
     def saveState(self):

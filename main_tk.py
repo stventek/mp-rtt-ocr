@@ -21,23 +21,6 @@ class MainTKWindow(customtkinter.CTk):
         self.height = 600
         self.geometry(f"{self.width}x{self.height}")
 
-        style = ttk.Style(self)
-        style.theme_create("style", settings = { 
-            "TLabelframe": {
-                "configure": {
-                    "background": theme.theme['CTkFrame']['top_fg_color'][appearance_mode.appearance_mode],
-                    "borderwidth": 1
-                }
-            },
-            'TLabelframe.Label': {
-                'configure': {
-                    'background': 'transparent',
-                    'foreground': theme.theme['CTkLabel']['text_color'][appearance_mode.appearance_mode]
-                }
-            }
-        })
-        style.theme_use("style")
-
         # logs group
 
         self.group_label_logs = CustomLabelFrame(self,
@@ -48,10 +31,10 @@ class MainTKWindow(customtkinter.CTk):
         self.label_logs = customtkinter.CTkLabel(master=self.group_label_logs.frame_group, text="Logs", font=("Arial", 24))
         self.label_logs.pack(pady=(20,5), padx=10)
 
-        self.textbox_logs = customtkinter.CTkTextbox(master=self.group_label_logs.frame_group)
+        self.textbox_logs = customtkinter.CTkTextbox(master=self.group_label_logs.frame_group, state='disabled')
         self.textbox_logs.pack(pady=15, padx=20,  fill="both", expand=True)
 
-        self.main_frame = customtkinter.CTkFrame(self, fg_color=theme.theme['CTk']['fg_color'][appearance_mode.appearance_mode])
+        self.main_frame = customtkinter.CTkFrame(self, fg_color=theme.theme['CTk']['fg_color'])
         self.main_frame.pack(fill='y', side='right', padx=(0,10), pady=10)
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_columnconfigure(1, weight=1)
@@ -68,49 +51,49 @@ class MainTKWindow(customtkinter.CTk):
         self.group_label_controls.frame_group.grid_columnconfigure(1, weight=1)
 
         self.button_snapshot = customtkinter.CTkButton(master=self.group_label_controls.frame_group, text="Snapshot")
-        self.button_snapshot.grid(row=0, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.button_snapshot.grid(row=0, column=1, padx=10, pady=10, sticky='w')
 
         self.button_set_auto_mode = customtkinter.CTkButton(master=self.group_label_controls.frame_group, text="Auto mode")
-        self.button_set_auto_mode.grid(row=1, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.button_set_auto_mode.grid(row=1, column=1, padx=10, pady=10, sticky='w')
 
         self.label_mode = customtkinter.CTkLabel(master=self.group_label_controls.frame_group, text="OCR Mode")
-        self.label_mode.grid(row=2, column=0, pady=(20,0), padx=(0,20), sticky='e')
+        self.label_mode.grid(row=2, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_mode = customtkinter.CTkComboBox(self.group_label_controls.frame_group,
             state="readonly", 
             values=["Static Frame", "Magic Window"])
         
-        self.combobox_mode.grid(row=2, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.combobox_mode.grid(row=2, column=1, padx=10, pady=10, sticky='w')
         self.combobox_mode.set("Static Frame")
 
         self.label_1_translator = customtkinter.CTkLabel(master=self.group_label_controls.frame_group, text="Translator")
-        self.label_1_translator.grid(row=3, column=0, pady=(20,0), padx=(0,20), sticky='e')
+        self.label_1_translator.grid(row=3, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_translator = customtkinter.CTkComboBox(self.group_label_controls.frame_group, 
             state="readonly", 
             values=["Deepl", "Google"])
         
-        self.combobox_translator.grid(row=3, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.combobox_translator.grid(row=3, column=1, padx=10, pady=10, sticky='w')
 
         self.label_2 = customtkinter.CTkLabel(master=self.group_label_controls.frame_group, text="From")
-        self.label_2.grid(row=4, column=0, pady=(20,0), padx=(0,20), sticky='e')
+        self.label_2.grid(row=4, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_from = customtkinter.CTkComboBox(
             self.group_label_controls.frame_group, 
             state="readonly",
             values=list(deepl_lang_codes.keys()))
-        self.combobox_from.grid(row=4, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.combobox_from.grid(row=4, column=1, padx=10, pady=10, sticky='w')
 
         self.label_3 = customtkinter.CTkLabel(master=self.group_label_controls.frame_group, text="To")
-        self.label_3.grid(row=5, column=0, pady=(20,0), padx=(0,20), sticky='e')
+        self.label_3.grid(row=5, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_to = customtkinter.CTkComboBox(self.group_label_controls.frame_group, 
             state="readonly",
             values=list(deepl_lang_codes.keys()))
-        self.combobox_to.grid(row=5, column=1, pady=(20,0), padx=(0,20), sticky='w')
+        self.combobox_to.grid(row=5, column=1, padx=10, pady=10, sticky='w')
 
         self.button_advance = customtkinter.CTkButton(master=self.group_label_controls.frame_group, text="Advance Settings")
-        self.button_advance.grid(row=6, column=1, pady=(20), padx=(0,20), sticky='w')
+        self.button_advance.grid(row=6, column=1, padx=10, pady=10, sticky='w')
 
         # select frame group
 
@@ -149,8 +132,6 @@ class MainTKWindow(customtkinter.CTk):
         )
         self.group_label_metadata.grid(row=1, column=1, sticky='ewns')
 
-        self.label_metadata = customtkinter.CTkLabel(master=self.group_label_metadata.frame_group, text="Metadata")
-        self.label_metadata.pack(pady=(20,5), padx=10)
 
         self.label_translation_count = customtkinter.CTkLabel(master=self.group_label_metadata.frame_group, text="Translation count: 0")
         self.label_translation_count.pack(pady=5, padx=10)
@@ -197,6 +178,20 @@ class MainTKWrapper():
         self.open_magic_window()
         self.open_translate_window()
         self.open_debug_group()
+        customtkinter.set_appearance_mode(self.state.theme.lower())
+
+    def update_theme(self):
+        customtkinter.set_appearance_mode(self.state.theme.lower())
+
+    def update_text_win_opacity(self, val):
+        if self.translate_window_wrapper:
+            self.translate_window_wrapper.text_display_window.child_toplevel.app.attributes('-alpha', val / 100)
+
+    def update_log_level(self):
+        if self.translate_window_wrapper:
+            self.translate_window_wrapper.logger.setLevel(self.state.log_level)
+            for handler in self.translate_window_wrapper.logger.handlers:
+                handler.setLevel(self.state.log_level)
 
     def open_debug_group(self):
         if self.state.debug_mode == 'on':

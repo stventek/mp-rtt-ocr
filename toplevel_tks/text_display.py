@@ -1,6 +1,8 @@
 import tkinter as tk
 import customtkinter as ck
 
+from main_tk import MainTKWrapper
+
 class BorderlessWindow:
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +31,8 @@ class BorderlessWindow:
         self.app.event_generate('<<OnMove>>')
 
 class TextDisplayWindowWrapper:
-    def __init__(self, root):
+    def __init__(self, root, mainTk: MainTKWrapper):
+        self.mainTk = mainTk
         self.auto_mode = False
         self.root = root
         self.parent_toplevel = BorderlessWindow(root, name="text_display_win_parent")
@@ -43,7 +46,7 @@ class TextDisplayWindowWrapper:
         self.parent_toplevel.app.bind('<<OnStopMove>>', self.on_parent_move)
 
         self.child_toplevel = BorderlessWindow(root, name="text_display_child")
-        self.child_toplevel.app.attributes("-alpha", 0.7)
+        self.child_toplevel.app.attributes("-alpha", self.mainTk.state.text_opacity)
         self.child_toplevel.app.wm_attributes('-topmost', True)
         self.child_toplevel.app.configure(background='black')
         self.child_toplevel.app.bind('<<OnMove>>', self.on_child_move)
@@ -145,7 +148,8 @@ class TextDisplayWindowWrapper:
 
 
 class TextDisplayWindowWrapperLinux:
-    def __init__(self, root):
+    def __init__(self, root, mainTk: MainTKWrapper):
+        self.mainTk = mainTk
         self.auto_mode = False
         self.root = root
         self.parent_toplevel = BorderlessWindow(root, name="text_display_win_parent")

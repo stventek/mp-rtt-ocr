@@ -19,15 +19,15 @@ class TranslateWindowWrapper:
         self.translator = TranslatorManager()
         self.thread_queue = deque()  
         self.logger = CallBackLogger('MainTK', self.add_log, 
-            logging.DEBUG)
+            self.mainTk.state.log_level)
         self.update_label_interval = 50
         self.translate_task : asyncio.Task = None
         self.text = ""
         self.tranlated_text = ""
         if sys.platform == 'linux':          
-            self.text_display_window = TextDisplayWindowWrapperLinux(self.mainTk.app)
+            self.text_display_window = TextDisplayWindowWrapperLinux(self.mainTk.app, self.mainTk)
         else:
-            self.text_display_window = TextDisplayWindowWrapper(self.mainTk.app)
+            self.text_display_window = TextDisplayWindowWrapper(self.mainTk.app, self.mainTk)
         self.text_display_window.main_window.after(self.update_label_interval, self.update_label)
         self.active_thread = threading.Event()
         self.my_thread = threading.Thread(target=self.update_translation)
