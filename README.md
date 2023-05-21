@@ -4,9 +4,9 @@ This is a multiplatform (MP) real-time translation (RRT) app that utilizes Optic
 
 ## Tested and working on
 
-- linuxmint 21.1
-- windows 11
-- mac os
+- Linux Mint 21.1
+- Windows 11
+- macOS 11 Big Sur
 
 ## Features
 
@@ -19,7 +19,8 @@ This is a multiplatform (MP) real-time translation (RRT) app that utilizes Optic
 
 ## Setup
 
-Python 3.9+ is requierd.
+- Python 3.9+ is requierd.  
+- Tesseract needs to be installed.
 
 Install dependencies
 
