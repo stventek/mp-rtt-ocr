@@ -29,7 +29,7 @@ class SelectableFrame():
         self.selectable_window.bind("<Button-1>", self.OnMouseDown)
         self.selectable_window.bind("<ButtonRelease-1>", self.OnMouseUp)
         self.selectable_window.focus_force()
-        if sys.platform == "linux":
+        if sys.platform == "linux" or sys.platform == 'darwin':
             self.selectable_window.wait_visibility(self.selectable_window)
         self.selectable_window.attributes("-alpha", 0.7)
 

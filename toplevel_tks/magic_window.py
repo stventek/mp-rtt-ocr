@@ -17,7 +17,7 @@ class MagicWindow():
         self.unframe = False
         self.borderlessW.app.title("magic window")
         self.borderlessW.app.geometry(f"{self.width}x{self.height}")
-        if sys.platform == 'linux':
+        if sys.platform == 'linux' or sys.platform == 'darwin':
             self.borderlessW.app.wait_visibility(self.borderlessW.app)
         else:
             self.borderlessW.app.wm_attributes('-transparentcolor', 'black')
@@ -34,7 +34,7 @@ class MagicWindow():
         self.grip.grid(column=0, row=0, sticky='se')
         self.grip.bind('<ButtonPress-1>', self.start_resize)
         draw_corners(self.canvas, 0, 0, self.width, self.height, tags='lines', width=self.frame_size)
-        if sys.platform != 'linux':
+        if sys.platform != 'linux' and sys.platform != 'darwin':
             self.borderlessW.app.after(100, self.check_hover)
         self.borderlessW.app.bind('<Configure>', self.update_win_info)
 

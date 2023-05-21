@@ -23,7 +23,7 @@ class TranslateWindowWrapper:
         self.translate_task : asyncio.Task = None
         self.text = ""
         self.tranlated_text = ""
-        if sys.platform == 'linux':          
+        if sys.platform == 'linux' or sys.platform == 'darwin':          
             self.text_display_window = TextDisplayWindowWrapperLinux(self.mainTk.app, self.mainTk)
         else:
             self.text_display_window = TextDisplayWindowWrapper(self.mainTk.app, self.mainTk)

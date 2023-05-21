@@ -1,5 +1,5 @@
-from utils.logger import CallBackLogger
 import main_tk
+
 mainTK = main_tk.MainTKWrapper()
 
 if __name__ == "__main__":
