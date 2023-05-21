@@ -18,7 +18,7 @@ class MagicWindow():
         self.borderlessW.app.title("magic window")
         self.borderlessW.app.geometry(f"{self.width}x{self.height}")
         if sys.platform == 'linux':
-            self.app.wait_visibility(self.borderlessW.app)
+            self.borderlessW.app.wait_visibility(self.borderlessW.app)
         else:
             self.borderlessW.app.wm_attributes('-transparentcolor', 'black')
         self.borderlessW.app.attributes("-alpha", 0.5)

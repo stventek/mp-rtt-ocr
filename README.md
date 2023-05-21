@@ -1,6 +1,12 @@
-# RTT-OCR
+# MP-RTT-OCR
 
-This is a real-time translation (RRT) app that utilizes Optical Character Recognition (OCR) to translate text. it aims to provide enough flexivity for variety of use cases like playing visual novels games, reading a digital book, and more.
+This is a multiplatform (MP) real-time translation (RRT) app that utilizes Optical Character Recognition (OCR). it aims to provide enough flexivity for a variety of use cases like playing visual novels games, reading a digital book, and more.
+
+## Tested and working on
+
+- linuxmint 21.1
+- windows 11
+- mac os
 
 ## Features
 

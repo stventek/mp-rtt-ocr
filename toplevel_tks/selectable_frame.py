@@ -50,6 +50,4 @@ class SelectableFrame():
         self.mainTk.state.saveState()
         self.mainTk.bring_child_windows()
         self.mainTk.app.deiconify()
-        if self.mainTk.translate_window_wrapper is None:
-            self.mainTk.open_translate_window()
         self.selectable_window.destroy()

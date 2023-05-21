@@ -175,8 +175,9 @@ class MainTKWrapper():
 
         self.app.switch_frame_magic.configure(command=self.unframe_magic)
 
+        from toplevel_tks.real_time_translate import TranslateWindowWrapper
+        self.translate_window_wrapper = TranslateWindowWrapper(self)
         self.open_magic_window()
-        self.open_translate_window()
         self.open_debug_group()
         customtkinter.set_appearance_mode(self.state.theme.lower())
 
@@ -184,14 +185,12 @@ class MainTKWrapper():
         customtkinter.set_appearance_mode(self.state.theme.lower())
 
     def update_text_win_opacity(self, val):
-        if self.translate_window_wrapper:
-            self.translate_window_wrapper.text_display_window.child_toplevel.app.attributes('-alpha', val / 100)
+        self.translate_window_wrapper.text_display_window.child_toplevel.app.attributes('-alpha', val / 100)
 
     def update_log_level(self):
-        if self.translate_window_wrapper:
-            self.translate_window_wrapper.logger.setLevel(self.state.log_level)
-            for handler in self.translate_window_wrapper.logger.handlers:
-                handler.setLevel(self.state.log_level)
+        self.translate_window_wrapper.logger.setLevel(self.state.log_level)
+        for handler in self.translate_window_wrapper.logger.handlers:
+            handler.setLevel(self.state.log_level)
 
     def open_debug_group(self):
         if self.state.debug_mode == 'on':
@@ -226,22 +225,17 @@ class MainTKWrapper():
         self.advance_settings_wrapper = AdvanceSettings(self) 
 
     def toggle_auto(self):
-        if self.translate_window_wrapper:
+        if self.state.ocr_mode != 'Static Frame' or self.state.x1 is not None:
             self.translate_window_wrapper.toggle_auto()
 
     def snapshot(self):
-        if self.translate_window_wrapper:
+        if self.state.ocr_mode != 'Static Frame' or self.state.x1 is not None:
             if self.translate_window_wrapper.translate_task:
                 self.translate_window_wrapper.translate_task.cancel()
             threading.Thread(target=self.snapshot_call).start()
 
     def snapshot_call(self):
         asyncio.run(self.translate_window_wrapper.keep_translating())
-
-    def open_translate_window(self):
-        if self.state.x1 is not None:
-            from toplevel_tks.real_time_translate import TranslateWindowWrapper
-            self.translate_window_wrapper = TranslateWindowWrapper(self)
 
     def add_log(self, log):
         self.app.textbox_logs.configure(state="normal") 
