@@ -1,15 +1,44 @@
 import tkinter as tk
-import customtkinter as ck
-
 from main_tk import MainTKWrapper
 from toplevel_tks.borderless_window import BorderlessWindow
+
+class CustomBorderlessWindow:
+
+    def __init__(self, *args, **kwargs):
+        self.app = tk.Toplevel(*args, **kwargs)
+        self.app.overrideredirect(True)
+        self.app.bind("<ButtonPress-1>", self.start_move)
+        self.app.bind("<ButtonRelease-1>", self.stop_move)
+        self.app.bind("<B1-Motion>", self.do_move)
+
+    def start_move(self, event):
+        if event.widget.widgetName != 'textArea' or event.widget.get(event.widget.index('current')) == '\n':
+            self.x = event.x
+            self.y = event.y
+            self.app.event_generate('<<StartMove>>')
+
+    def stop_move(self, event):
+        if event.widget.widgetName != 'textArea' or event.widget.get(event.widget.index('current')) == '\n':
+            self.x = None
+            self.y = None
+            self.app.event_generate('<<OnStopMove>>')
+
+    def do_move(self, event):
+        if event.widget.widgetName != 'textArea' or event.widget.get(event.widget.index('current')) == '\n':
+            deltax = event.x - self.x
+            deltay = event.y - self.y
+            x = self.app.winfo_x() + deltax
+            y = self.app.winfo_y() + deltay
+            self.app.geometry(f"+{x}+{y}")
+            self.app.event_generate('<<OnMove>>')
 
 class TextDisplayWindowWrapper:
     def __init__(self, root, mainTk: MainTKWrapper):
         self.mainTk = mainTk
         self.auto_mode = False
+        self.hover = False
         self.root = root
-        self.parent_toplevel = BorderlessWindow(root, name="text_display_win_parent")
+        self.parent_toplevel = CustomBorderlessWindow(root, name="text_display_win_parent")
         self.main_window = self.parent_toplevel.app
         self.parent_toplevel.app.wm_attributes('-transparentcolor', 'black')
         self.parent_toplevel.app.configure(bg="black")
@@ -39,14 +68,14 @@ class TextDisplayWindowWrapper:
         self.canvas_height = 30
         self.canvas = tk.Canvas(self.main_window, bg="black", highlightthickness=0, height=self.canvas_height)
         self.canvas.grid(row=0, column=0, sticky='ew')
-
-        self.label = tk.Label(self.main_window, 
-                         fg='white', 
-                         background="black", 
-                         font=('Arial', 16),
-                         wraplength=self.main_window.winfo_width() - self.canvas_height * 2)
+        self.label = tk.Text(self.main_window, 
+            fg='white', 
+            border=0,
+            background="black", 
+            font=('Arial', 16))
+        self.label.widgetName = 'textArea'
         self.label.grid(row=1, column=0, sticky='nesw', padx=self.canvas_height)
-        
+        self.label.configure(cursor='arrow')
         self.main_window.bind('<Configure>', self.update_parent_content)
 
         # parent grip
@@ -55,9 +84,27 @@ class TextDisplayWindowWrapper:
         self.grip.configure(cursor='sizing')
         self.grip.grid(row=2, column=0, sticky='se', pady=(self.canvas_height - self.grip_size,0))
         self.grip.bind('<ButtonPress-1>', self.start_resize)
+        self.main_window.after(100, self.check_hover)
+
+    def check_hover(self):
+
+        x,y = self.main_window.winfo_pointerxy()
+        wx, wy = self.main_window.winfo_x(), self.main_window.winfo_y()
+        w, h = self.main_window.winfo_width(), self.main_window.winfo_height()
+        endx, endy = wx + w, wy + h
+        if x > wx and y > wy and x < endx and y < endy:
+            if not self.hover:
+                # in
+                self.main_window.wm_attributes('-transparentcolor', '#3d0d01')
+            self.hover = True
+        else:
+            if self.hover:
+                # out
+                 self.main_window.wm_attributes('-transparentcolor', 'black')
+            self.hover = False
+        self.main_window.after(100, self.check_hover)
 
     def update_parent_content(self, event):
-        self.label.configure(wraplength=self.main_window.winfo_width() - self.canvas_height * 2)
         self.update_canvas()
 
     def update_canvas(self):
@@ -126,7 +173,7 @@ class TextDisplayWindowWrapperLinux:
         self.mainTk = mainTk
         self.auto_mode = False
         self.root = root
-        self.parent_toplevel = BorderlessWindow(root, name="text_display_win_parent")
+        self.parent_toplevel = CustomBorderlessWindow(root, name="text_display_win_parent")
         self.main_window = self.parent_toplevel.app
         self.parent_toplevel.app.configure(bg="black")
         self.parent_toplevel.app.geometry(f"{800}x{200}")
@@ -141,11 +188,13 @@ class TextDisplayWindowWrapperLinux:
         self.canvas = tk.Canvas(self.main_window, bg="black", highlightthickness=0, height=self.canvas_height)
         self.canvas.grid(row=0, column=0, sticky='ew')
 
-        self.label = tk.Label(self.main_window, 
-                         fg='white', 
-                         background="black", 
-                         font=('Arial', 16),
-                         wraplength=self.main_window.winfo_width() - self.canvas_height * 2)
+        self.label = tk.Text(self.main_window, 
+                        fg='white', 
+                        border=0,
+                        background="black", 
+                        font=('Arial', 16))
+        self.label.widgetName = 'textArea'
+        self.label.configure(cursor='arrow')
         self.label.grid(row=1, column=0, sticky='nesw', padx=self.canvas_height)
         
         self.main_window.bind('<Configure>', self.update_parent_content)
@@ -158,7 +207,6 @@ class TextDisplayWindowWrapperLinux:
         self.grip.bind('<ButtonPress-1>', self.start_resize)
 
     def update_parent_content(self, event):
-        self.label.configure(wraplength=self.main_window.winfo_width() - self.canvas_height * 2)
         self.update_canvas()
 
     def update_canvas(self):

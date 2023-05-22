@@ -1,4 +1,3 @@
-from playwright.async_api import async_playwright
 from utils.lang_codes import deepl_lang_codes, google_lang_codes
 from deepl import DeepLCLI
 from googletrans import Translator as GoogleTranslator

@@ -103,7 +103,9 @@ class TranslateWindowWrapper:
             self.active_thread.wait(int(self.mainTk.state.ocr_interval) / 1000)
 
     def update_label(self):
-        self.text_display_window.label.configure(text=self.tranlated_text)
+        if self.text_display_window.label.get('1.0', tk.END + '-1c') != self.tranlated_text:
+            self.text_display_window.label.delete('1.0', tk.END)
+            self.text_display_window.label.insert(tk.END, self.tranlated_text)
         self.text_display_window.main_window.after(self.update_label_interval, self.update_label)
 
     def toggle_auto(self):

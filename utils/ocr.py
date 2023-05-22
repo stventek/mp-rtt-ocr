@@ -1,4 +1,3 @@
-
 import cv2
 import mss
 import numpy as np

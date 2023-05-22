@@ -6,7 +6,7 @@ from utils.get_displays import get_displays
 from utils.main_tk_state import StateData
 from utils.translator_manager import deepl_lang_codes, google_lang_codes
 import tkinter as tk
-import tkinter.ttk as ttk
+
 
 customtkinter.set_default_color_theme("custom_theme.json")
 

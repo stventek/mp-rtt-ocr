@@ -1,6 +1,6 @@
 # MP-RTT-OCR
 
-This is a multiplatform (MP) real-time translation (RRT) app that utilizes Optical Character Recognition (OCR). it aims to provide enough flexivity for a variety of use cases like playing visual novels games, reading a digital book, and more.
+This is a multiplatform (MP) real-time translation (RTT) app that utilizes Optical Character Recognition (OCR). it aims to provide enough flexibility for a variety of use cases like playing visual novels games, reading a digital book, and more.
 
 ## Tested and working on
 
