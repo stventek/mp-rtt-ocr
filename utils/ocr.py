@@ -1,7 +1,7 @@
-import cv2
 import mss
 import numpy as np
 import pytesseract
+from PIL import Image
 
 def printImg(x,y,w,h):
     with mss.mss() as sct:
@@ -12,10 +12,7 @@ def printImg(x,y,w,h):
             "width": w,
             "height": h,
         }
-        # Get raw pixels from the screen, save it to a Numpy array
-        img = np.array(sct.grab(monitor))
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return img
+        return np.array(sct.grab(monitor))[:, :, 0]
 
 def OCR(image):
     text : str = pytesseract.image_to_string(image)

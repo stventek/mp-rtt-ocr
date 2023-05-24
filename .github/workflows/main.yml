@@ -1,0 +1,62 @@
+name: Build executables
+
+on: 
+  push:
+    branches: main
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["windows-latest", "macOS-latest", "ubuntu-latest"]
+        architecture: ["x64"]
+        python-version: ["3.11"]
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }} ${{ matrix.architecture }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.architecture }}
+
+    - name: Build executable ${{matrix.os}}
+      if: ${{matrix.os == 'ubuntu-latest'}}
+      run: |
+        pip install -r requirements_package.txt
+        apt-get update && apt-get install -y python3-tk
+        pip install pyinstaller
+        python scripts/pyinstaller_script.py
+
+    - name: Build executable ${{matrix.os}}
+      if: ${{matrix.os == 'windows-latest'}}
+      run: |
+        pip install -r requirements_package.txt
+        pip install pyinstaller
+        python scripts/pyinstaller_script.py
+
+    - name: Build executable ${{matrix.os}}
+      if: ${{matrix.os == 'macOS-latest'}}
+      run: |
+        pip install -r requirements_package.txt
+        pip install pyinstaller
+        python scripts/pyinstaller_script.py
+
+    - name: Zip executables ${{matrix.os}}
+      if: ${{matrix.os == 'windows-latest'}}
+      run: 'Compress-Archive -Path dist/* -Destination executables.zip'
+      
+    - name: Zip executables ${{matrix.os}}
+      if: ${{matrix.os != 'windows-latest'}}
+      run: 'zip -r executables.zip dist'
+    
+    - name: Upload executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: mp-rtt-ocr-${{ matrix.os }}-${{ matrix.architecture }}-${{ matrix.python-version }}
+        path: executables.zip

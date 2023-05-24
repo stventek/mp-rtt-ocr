@@ -3,7 +3,6 @@ import sys
 import threading
 import tkinter as tk
 from collections import deque
-from playwright import async_api
 from toplevel_tks.text_display import TextDisplayWindowWrapper, TextDisplayWindowWrapperLinux
 from utils.logger import CallBackLogger
 from utils.main_tk_state import computeFrameData
@@ -83,7 +82,10 @@ class TranslateWindowWrapper:
                     done = True
                 else:
                     done = True
-            except async_api.TimeoutError:
+            except ModuleNotFoundError:
+                self.logger.info("deepl-cli is not installed, it can be installed with 'pip install deepl-cli'")  
+                done = True
+            except :
                 self.thread_queue.append(('add_translation_timeout', None))
                 self.logger.info("Timeout, re trying")  
                   

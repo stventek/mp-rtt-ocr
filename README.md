@@ -24,8 +24,8 @@ This is a multiplatform (MP) real-time translation (RTT) app that utilizes Optic
 
 Install dependencies
 
-```bash pip install -r requirements.txt```
+```pip install -r requirements.txt```
 
 Start the app
 
-```bash python main.py```
+```python main.py```
