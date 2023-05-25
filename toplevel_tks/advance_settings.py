@@ -27,7 +27,7 @@ class AdvanceSettings():
         self.settings_tab = self.tabview.add("Settings")
 
         # Add widgets to the "Settings" tab
-        self.ocr_label = ck.CTkLabel(self.settings_tab, text="OCR interval in ms (250 default)")
+        self.ocr_label = ck.CTkLabel(self.settings_tab, text="OCR interval in ms (1000 default)")
         self.ocr_interval = ck.StringVar(value=self.mainTk.state.ocr_interval)
         self.ocr_interval_entry = ck.CTkEntry(self.settings_tab, textvariable=self.ocr_interval)
         self.timeout_label = ck.CTkLabel(self.settings_tab, text="Translation Timeout")

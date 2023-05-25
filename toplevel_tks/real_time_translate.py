@@ -115,9 +115,9 @@ class TranslateWindowWrapper:
         self.text_display_window.update_canvas()
         if self.text_display_window.auto_mode: 
             self.logger.info(f"OCR scan every {int(self.mainTk.state.ocr_interval) / 1000}s")
-            self.mainTk.app.button_snapshot.configure(state="disabled")
+            self.mainTk.app.main_tk_frame.button_snapshot.configure(state="disabled")
         else:
-            self.mainTk.app.button_snapshot.configure(state=tk.NORMAL)
+            self.mainTk.app.main_tk_frame.button_snapshot.configure(state=tk.NORMAL)
 
     def on_exit(self):
         self.active_thread.set()

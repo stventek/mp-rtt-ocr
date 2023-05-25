@@ -18,7 +18,7 @@ class StateData:
         self.from_lang = data.get('from_lang') or 'English'
         self.to_lang = data.get('to_lang') or 'Spanish'
         self.display = data.get('display') or {"top":None,"left":None,"width":None,"height":None, "choice":1}
-        self.ocr_interval = data.get('ocr_interval') or 250
+        self.ocr_interval = data.get('ocr_interval') or 1000
         self.debug_mode = data.get('debug_mode') or 'on'
         self.translate_timeout = data.get('translate_timeout') or 8000
         self.log_level = data.get('log_level') or 'DEBUG'
