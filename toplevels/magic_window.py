@@ -1,14 +1,14 @@
 import sys
 import tkinter as tk
-import main_tk
-from toplevel_tks.borderless_window import BorderlessWindow
+import main_window_wrapper
+from toplevels.borderless_window import BorderlessWindow
 from utils.draw_corners import draw_corners
 
 class MagicWindow():
 
-    def __init__(self, mainTk: main_tk.MainTKWrapper):
+    def __init__(self, mainTk: main_window_wrapper.MainTKWrapper):
         self.mainTk = mainTk
-        self.borderlessW = BorderlessWindow(self.mainTk.app, name="magic_window")
+        self.borderlessW = BorderlessWindow(self.mainTk.window, name="magic_window")
         self.width = 800
         self.height = 200
         self.resizing = None

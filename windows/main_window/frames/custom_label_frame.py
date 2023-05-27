@@ -1,4 +1,3 @@
-import tkinter.ttk as ttk
 import customtkinter as ck
 
 theme = ck.ThemeManager()

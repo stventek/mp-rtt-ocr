@@ -1,9 +1,9 @@
 import customtkinter as ck
-import main_tk
+import main_window_wrapper
 
 class AdvanceSettings():
 
-    def __init__(self, mainTk: main_tk.MainTKWrapper):
+    def __init__(self, mainTk: main_window_wrapper.MainTKWrapper):
         self.mainTk = mainTk
         self.log_levels = {
             "CRITICAL": 50,
@@ -13,13 +13,13 @@ class AdvanceSettings():
             "DEBUG": 10,
             "NOTSET": 0,
         }
-        self.app = ck.CTkToplevel(self.mainTk.app)
+        self.app = ck.CTkToplevel(self.mainTk.window)
         self.app.title("Advance Settings")
         self.width = 600
         self.height = 400
 
         self.app.geometry(f"{self.width}x{self.height}")
-        self.app.transient(self.mainTk.app)
+        self.app.transient(self.mainTk.window)
 
         self.tabview = ck.CTkTabview(self.app)
 
