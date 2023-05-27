@@ -7,6 +7,8 @@ from utils.main_tk_state import computeFrameData
 from utils.ocr import OCR, printImg
 from utils.translator_manager import TranslatorManager
 import main_window_wrapper
+import pytesseract
+import tkinter as tk
 
 class TranslateThreadSafe:
     def __init__(self, queue: deque, logger: CallBackLogger, mainTK: main_window_wrapper.MainTKWrapper):
@@ -42,7 +44,9 @@ class TranslateThreadSafe:
                 done = True
                 return tranlated_text
             except ModuleNotFoundError:
-                self.logger.info("deepl-cli is not installed, it can be installed with 'pip install deepl-cli'")  
+                msg = """deepl-cli is not bundled with the app due to its size. \
+                If you want to use deepl it can be installed with \n 'pip install deepl-cli'"""
+                tk.messagebox.showerror(title='deepl-cli not installed', message=msg)
                 done = True
             except asyncio.CancelledError:
                 raise asyncio.CancelledError
@@ -82,7 +86,12 @@ class TranslateThreadSafe:
 
     def try_run_translate_task(self):
         self.logger.debug("OCR check")
-        is_required, text = self.is_translation_required()
+        try:
+            is_required, text = self.is_translation_required()
+        except pytesseract.pytesseract.TesseractNotFoundError:
+            tk.messagebox.showerror(title='Tesseract not found', message='Tesseract not found. Please make sure Tesseract is installed and is set in the PATH.')
+            self.infinte_translate = False
+            return
         if is_required:
             try:
                 tranlated_text = asyncio.run(self.run_translate_task(text))
