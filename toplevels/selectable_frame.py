@@ -43,10 +43,17 @@ class SelectableFrame():
         self.c1 = event.x, event.y
         self.p1 = event.x_root, event.y_root
 
-    def OnMouseUp(self, event):
-        self.mainTk.state.x1, self.mainTk.state.y1 = self.p1
-        self.mainTk.state.x2, self.mainTk.state.y2 = self.p2
-        self.mainTk.state.saveState()
+    def hide(self):
         self.mainTk.bring_child_windows()
         self.mainTk.window.deiconify()
         self.selectable_window.destroy()
+
+    def OnMouseUp(self, event):
+        if self.c2:
+            self.mainTk.state.x1, self.mainTk.state.y1 = self.p1
+            self.mainTk.state.x2, self.mainTk.state.y2 = self.p2
+            self.mainTk.state.saveState()
+            self.hide()
+        else:
+            self.hide()
+            tk.messagebox.showerror(title='Bad selection', message='To select the frame, right-click, hold, and move.')
