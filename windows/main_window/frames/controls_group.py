@@ -3,6 +3,7 @@ from windows.main_window.frames.custom_label_frame import CustomLabelFrame
 from main_window_wrapper import MainTKWrapper
 from utils.translator_manager import deepl_lang_codes, google_lang_codes
 import tkinter as tk
+import pytesseract
 
 class ControlsGroup(CustomLabelFrame):
     def __init__(self, mainW: MainTKWrapper, *args, **kwargs):
@@ -42,32 +43,43 @@ class ControlsGroup(CustomLabelFrame):
         
         self.combobox_translator.grid(row=3, column=1, padx=10, pady=10, sticky='w')
 
+        self.label_trained_data = ck.CTkLabel(master=self.frame_group, text="Trained data")
+        self.label_trained_data.grid(row=4, column=0, padx=10, pady=10, sticky='e')
+
+        self.combobox_trained_data = ck.CTkComboBox(self.frame_group, 
+            state="readonly", 
+            values=pytesseract.get_languages())
+        
+        self.combobox_trained_data.grid(row=4, column=1, padx=10, pady=10, sticky='w')
+
         self.label_2 = ck.CTkLabel(master=self.frame_group, text="From")
-        self.label_2.grid(row=4, column=0, padx=10, pady=10, sticky='e')
+        self.label_2.grid(row=5, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_from = ck.CTkComboBox(
             self.frame_group, 
             state="readonly",
             values=[])
-        self.combobox_from.grid(row=4, column=1, padx=10, pady=10, sticky='w')
+        self.combobox_from.grid(row=5, column=1, padx=10, pady=10, sticky='w')
 
         self.label_3 = ck.CTkLabel(master=self.frame_group, text="To")
-        self.label_3.grid(row=5, column=0, padx=10, pady=10, sticky='e')
+        self.label_3.grid(row=6, column=0, padx=10, pady=10, sticky='e')
 
         self.combobox_to = ck.CTkComboBox(
             self.frame_group, 
             state="readonly",
             values=[])
-        self.combobox_to.grid(row=5, column=1, padx=10, pady=10, sticky='w')
+        self.combobox_to.grid(row=6, column=1, padx=10, pady=10, sticky='w')
 
         self.button_advance = ck.CTkButton(master=self.frame_group, text="Advance Settings")
-        self.button_advance.grid(row=6, column=1, padx=10, pady=10, sticky='w')
+        self.button_advance.grid(row=7, column=1, padx=10, pady=10, sticky='w')
 
         self._update_languages_list()
         self.button_set_auto_mode.configure(command=self.mainW.toggle_auto)
         self.button_snapshot.configure(command=self.snapshot)
         self.combobox_translator.configure(command=self._update_translator_combobox)
         self.combobox_translator.set(self.mainW.state.translator)
+        self.combobox_trained_data.configure(command=self._update_trained_data_combobox)
+        self.combobox_trained_data.set(self.mainW.state.trained_data)
         self.combobox_from.configure(command=self._update_from_lang_combobox)
         self.combobox_from.set(self.mainW.state.from_lang)
         self.combobox_to.configure(command=self._update_to_lang_combobox)
@@ -81,6 +93,10 @@ class ControlsGroup(CustomLabelFrame):
         self.master.after(1000, lambda: self.button_snapshot.configure(state=tk.NORMAL))
         self.mainW.snapshot()
 
+    def _update_trained_data_combobox(self, choice):
+        self.mainW.state.trained_data = choice
+        self.mainW.state.saveState()
+        
     def _update_from_lang_combobox(self, choice):
         self.mainW.state.from_lang = choice
         self.mainW.state.saveState()

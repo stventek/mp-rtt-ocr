@@ -25,6 +25,7 @@ class StateData:
         self.ocr_mode = data.get('ocr_mode') or 'Magic Window'
         self.theme = data.get('theme') or 'System'
         self.text_opacity = data.get('text_opacity') or 0.6
+        self.trained_data = data.get('trained_data') or 'eng'
 
     def _loadData(self) -> dict:
         try:
@@ -49,7 +50,8 @@ class StateData:
             'log_level': self.log_level,
             'ocr_mode': self.ocr_mode,
             'theme': self.theme,
-            'text_opacity': self.text_opacity
+            'text_opacity': self.text_opacity,
+            'trained_data': self.trained_data
         }
 
     def saveState(self):
