@@ -49,14 +49,14 @@ jobs:
 
     - name: Zip executables ${{matrix.os}}
       if: ${{matrix.os == 'windows-latest'}}
-      run: 'Compress-Archive -Path dist/* -Destination executables.zip'
+      run: 'Compress-Archive -Path dist/* -Destination mp-rtt-ocr-${{ matrix.os }}-${{ matrix.architecture }}-${{ matrix.python-version }}.zip'
       
     - name: Zip executables ${{matrix.os}}
       if: ${{matrix.os != 'windows-latest'}}
-      run: 'zip -r executables.zip dist'
+      run: 'cd dist && zip -r ../mp-rtt-ocr-${{ matrix.os }}-${{ matrix.architecture }}-${{ matrix.python-version }}.zip mp-rtt-ocr'
     
     - name: Upload executable
       uses: actions/upload-artifact@v3
       with:
         name: mp-rtt-ocr-${{ matrix.os }}-${{ matrix.architecture }}-${{ matrix.python-version }}
-        path: executables.zip
+        path: mp-rtt-ocr-${{ matrix.os }}-${{ matrix.architecture }}-${{ matrix.python-version }}.zip
