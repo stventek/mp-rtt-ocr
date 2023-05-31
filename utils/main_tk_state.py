@@ -18,13 +18,14 @@ class StateData:
         self.from_lang = data.get('from_lang') or 'English'
         self.to_lang = data.get('to_lang') or 'Spanish'
         self.display = data.get('display') or {"top":None,"left":None,"width":None,"height":None, "choice":1}
-        self.ocr_interval = data.get('ocr_interval') or 250
+        self.ocr_interval = data.get('ocr_interval') or 1000
         self.debug_mode = data.get('debug_mode') or 'on'
         self.translate_timeout = data.get('translate_timeout') or 8000
         self.log_level = data.get('log_level') or 'DEBUG'
         self.ocr_mode = data.get('ocr_mode') or 'Magic Window'
         self.theme = data.get('theme') or 'System'
         self.text_opacity = data.get('text_opacity') or 0.6
+        self.trained_data = data.get('trained_data') or 'eng'
 
     def _loadData(self) -> dict:
         try:
@@ -49,7 +50,8 @@ class StateData:
             'log_level': self.log_level,
             'ocr_mode': self.ocr_mode,
             'theme': self.theme,
-            'text_opacity': self.text_opacity
+            'text_opacity': self.text_opacity,
+            'trained_data': self.trained_data
         }
 
     def saveState(self):

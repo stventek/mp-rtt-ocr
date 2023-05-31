@@ -1,6 +1,6 @@
-import main_tk
+import main_window_wrapper
 
-mainTK = main_tk.MainTKWrapper()
+mainTK = main_window_wrapper.MainTKWrapper()
 
 if __name__ == "__main__":
-    mainTK.app.mainloop()
+    mainTK.window.mainloop()

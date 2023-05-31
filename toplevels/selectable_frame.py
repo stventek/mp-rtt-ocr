@@ -1,20 +1,20 @@
 import sys
 import tkinter as tk
-import main_tk
+import main_window_wrapper
 
 class SelectableFrame():
 
-    def __init__(self, mainTk: main_tk.MainTKWrapper):
+    def __init__(self, mainTk: main_window_wrapper.MainTKWrapper):
         self.c1 = None
         self.c2 = None
         self.p1 = None
         self.p2 = None
         self.mainTk = mainTk
-        self.selectable_window = tk.Toplevel(self.mainTk.app)
+        self.selectable_window = tk.Toplevel(self.mainTk.window)
         geometry_string = "{width}x{height}{sign}{left}{sign}{top}".format(
             width=self.mainTk.state.display["width"],
             height=self.mainTk.state.display["height"],
-            sign="" if self.mainTk.state.display["left"] >= 0 else "-",
+            sign="+" if self.mainTk.state.display["left"] >= 0 else "-",
             left=abs(self.mainTk.state.display["left"]),
             top=self.mainTk.state.display["top"]
         )
@@ -43,10 +43,17 @@ class SelectableFrame():
         self.c1 = event.x, event.y
         self.p1 = event.x_root, event.y_root
 
-    def OnMouseUp(self, event):
-        self.mainTk.state.x1, self.mainTk.state.y1 = self.p1
-        self.mainTk.state.x2, self.mainTk.state.y2 = self.p2
-        self.mainTk.state.saveState()
+    def hide(self):
         self.mainTk.bring_child_windows()
-        self.mainTk.app.deiconify()
+        self.mainTk.window.deiconify()
         self.selectable_window.destroy()
+
+    def OnMouseUp(self, event):
+        if self.c2:
+            self.mainTk.state.x1, self.mainTk.state.y1 = self.p1
+            self.mainTk.state.x2, self.mainTk.state.y2 = self.p2
+            self.mainTk.state.saveState()
+            self.hide()
+        else:
+            self.hide()
+            tk.messagebox.showerror(title='Bad selection', message='To select the frame, right-click, hold, and move.')

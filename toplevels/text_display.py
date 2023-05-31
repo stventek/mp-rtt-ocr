@@ -1,6 +1,6 @@
 import tkinter as tk
-from main_tk import MainTKWrapper
-from toplevel_tks.borderless_window import BorderlessWindow
+from main_window_wrapper import MainTKWrapper
+from toplevels.borderless_window import BorderlessWindow
 
 class CustomBorderlessWindow:
 
